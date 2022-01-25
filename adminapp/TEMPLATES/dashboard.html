@@ -1,0 +1,70 @@
+{% extends "master.html" %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script>
+   window.onload=function(){
+       loaddata()
+   }
+    
+</script>
+
+    <div style="padding-top: 60px;">
+        <div class="card">
+            <div class="card-header">User</div>
+            <div class="card-body">
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th width="5%">Sl</th>
+                           <th width="10%">Name</th>
+                           <th width="10%">Position</th>
+                            <th width="10%">Mobile Number</th>
+                            <th width="10%">Address</th>
+                            <th width="10%">Delete</th>
+                            
+                        </tr>
+                        </thead>
+                        <tbody>
+                      
+                           
+                            
+                            </tbody>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>  
+
+
+<script>
+    function loaddata(){
+        $.ajax({
+            url:'/adminapp/getdata/',
+            type:'GET',
+            success: function(response){
+                $('.tr').remove()
+                for(i=0;i<response.form.length;i++){
+                    $('#table').append("<tr class='tr'><td>"+response.form[i].id+"</td><td>"+response.form[i].name+"</td><td>"+response.form[i].position+"</td><td>"+response.form[i].mobile+"</td><td>"+response.form[i].address+"</td><td><button onclick='deldata("+response.form[i].id+")'>Delete</button></td></tr>")
+                }
+            }
+        })
+     }
+
+     function deldata(id){
+    $.ajaxSetup({
+  headers: { "X-CSRFToken": '{{csrf_token}}' }
+});
+            $.ajax({
+                url:'/adminapp/deldata/',
+                type: 'POST',
+                data:{
+                    id:id
+                },
+                success: function(response){
+                    alert(response.msg)
+                    loaddata()
+                }
+            })
+        }
+</script>
+{% endblock %}
